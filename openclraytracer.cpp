@@ -20,7 +20,7 @@ std::vector<cl_program> progs;
 std::vector<cl_kernel> kerns;
 
 size_t shrRoundUp(int group_size, int global_size) {
-    int r = global_size % group_size;
+	int r = global_size % group_size;
 
 	return r == 0
 		? global_size
@@ -28,7 +28,7 @@ size_t shrRoundUp(int group_size, int global_size) {
 }
 
 void startKernel(int w, int h) {
-	const size_t local_ws[] = {8, 8};
+	const size_t local_ws[] = {8, 16};
 	const size_t global_ws[] = {shrRoundUp(local_ws[0], w), shrRoundUp(local_ws[1], h)};
 
 	cl_int error = clEnqueueAcquireGLObjects(queue, 1, &tex_cl, 0, NULL, NULL); assert(!error);
@@ -40,20 +40,20 @@ void startKernel(int w, int h) {
 void render(void) {
 	startKernel(SCRWIDTH, SCRHEIGHT);
 	glClear(GL_COLOR_BUFFER_BIT);
-    glRasterPos2i(0, 0);
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, texture);
-    glDrawPixels(SCRWIDTH, SCRHEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+	glRasterPos2i(0, 0);
+	glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, texture);
+	glDrawPixels(SCRWIDTH, SCRHEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 	glutSwapBuffers();
 	glutPostRedisplay();
 }
 
 void reshape(int x, int y) {
-    glViewport(0, 0, x, y);
+	glViewport(0, 0, x, y);
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0.0, 1.0, 0.0, 1.0, 0.0, 1.0); 
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0.0, 1.0, 0.0, 1.0, 0.0, 1.0); 
 }
 
 void clInit() {
@@ -75,10 +75,10 @@ void clInit() {
 
 	cl_bool imageSupport;
 	clGetDeviceInfo(device, CL_DEVICE_IMAGE_SUPPORT, sizeof(imageSupport), &imageSupport, NULL);
-    printf("%s...\n\n", 
+	printf("%s...\n\n", 
 		imageSupport 
-			? "[CL] Texture support available" 
-			: "[CL] Texture support NOT available, this application will not be able to run.");
+		? "[CL] Texture support available" 
+		: "[CL] Texture support NOT available, this application will not be able to run.");
 }
 
 char* readfile(const char *filename, unsigned *size) {
@@ -131,7 +131,7 @@ cl_kernel loadAndBuildKernel(const char *filename, const char *entrypoint){
 }
 
 void appInit(int w, int h) {
-    glGenBuffersARB(1, &texture);
+	glGenBuffersARB(1, &texture);
 	glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, texture);
 	glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, w * h * sizeof(GLubyte) * 4, 0, GL_STREAM_DRAW_ARB);
 	glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
@@ -140,7 +140,7 @@ void appInit(int w, int h) {
 	tex_cl = clCreateFromGLBuffer(context, CL_MEM_WRITE_ONLY, texture, &error); assert(!error);
 
 	kernel = loadAndBuildKernel("data/kernel.c", "raytracer");
-	
+
 	error = clSetKernelArg(kernel, 0, sizeof(cl_mem), &tex_cl); assert(!error);
 	error = clSetKernelArg(kernel, 1, sizeof(cl_uint), &w); assert(!error);
 	error = clSetKernelArg(kernel, 2, sizeof(cl_uint), &h); assert(!error);

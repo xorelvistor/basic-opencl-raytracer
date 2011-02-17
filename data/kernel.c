@@ -157,13 +157,13 @@ int sphereintersect(struct Sphere *s, struct Ray *r, float *dist)
 	float4 v = r->origin - s->center;
 	float b = -dot(v, r->dir);
 	float det = (b * b) - dot(v, v) + s->sqradius;
-	
+
 	if(det > 0)
 	{
 		det = sqrt(det);
 		float i1 = b - det;
 		float i2 = b + det;
-		
+
 		if(i2 > 0)
 		{
 			if(i1 < 0)
@@ -176,7 +176,7 @@ int sphereintersect(struct Sphere *s, struct Ray *r, float *dist)
 			}
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -287,7 +287,7 @@ float4 raytrace(struct Scene *s, struct RayStack *stack, struct Ray *r, float re
 	{
 		struct Material *lm = &s->materials[s->lights[i].material];
 		float4 L = s->lights[i].center - P;
-		
+
 		float shade = shadowray(s, L, P);
 
 		L = normalize(L);
@@ -296,7 +296,7 @@ float4 raytrace(struct Scene *s, struct RayStack *stack, struct Ray *r, float re
 		float s = dot(r->dir, reflect(N, L)) * shade;
 
 		color += angle * m->diff * m->amb * lm->amb 
-			   + powr(fmax(0.f, s), m->spec) * lm->amb;
+			+ powr(fmax(0.f, s), m->spec) * lm->amb;
 	}
 
 	if(m->refl > 0)

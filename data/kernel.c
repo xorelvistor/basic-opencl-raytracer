@@ -6,7 +6,7 @@
 #define MAX_LIGHTS 10
 #define MAX_MATERIALS 10
 
-#define EPSILON 0.001
+#define EPSILON 0.001f
 
 struct Ray
 {
@@ -59,37 +59,37 @@ struct Scene
 void buildscene(struct Scene *s)
 {
 	s->spheres[s->numSpheres].center = (float4)(1, -0.8f, 3, 0);
-	s->spheres[s->numSpheres].sqradius = 2.5 * 2.5;
+	s->spheres[s->numSpheres].sqradius = 2.5f * 2.5f;
 	s->spheres[s->numSpheres].material = 0;
 	s->numSpheres++;
 
-	s->spheres[s->numSpheres].center = (float4)(1, -0.5, 7, 0);
+	s->spheres[s->numSpheres].center = (float4)(1, -0.5f, 7, 0);
 	s->spheres[s->numSpheres].sqradius = 2 * 2;
 	s->spheres[s->numSpheres].material = 5;
 	s->numSpheres++;
 
-	s->spheres[s->numSpheres].center = (float4)(-5.5, -0.5, 7, 0);
+	s->spheres[s->numSpheres].center = (float4)(-5.5f, -0.5f, 7, 0);
 	s->spheres[s->numSpheres].sqradius = 2 * 2;
 	s->spheres[s->numSpheres].material = 1;
 	s->numSpheres++;
 
 	s->planes[s->numPlanes].normal = (float4)(0, 1, 0, 0);
-	s->planes[s->numPlanes].dist = -4.4;
+	s->planes[s->numPlanes].dist = -4.4f;
 	s->planes[s->numPlanes].material = 2;
 	s->numPlanes++;
 
 	s->materials[0].refl = 0;
-	s->materials[0].refr = 1.1;
+	s->materials[0].refr = 1.1f;
 	s->materials[0].spec = 127;
-	s->materials[0].amb  = (float4)(0.7, 0.7, 0.7, 0);
-	s->materials[0].diff = 0.1;
+	s->materials[0].amb  = (float4)(0.7f, 0.7f, 0.7f, 0);
+	s->materials[0].diff = 0.1f;
 	s->numMaterials = 1;
 
 	s->materials[1].refl = 1;
 	s->materials[1].refr = 0;
 	s->materials[1].spec = 120;
 	s->materials[1].amb  = (float4)(0.7f, 0.7f, 1.0f, 0);
-	s->materials[1].diff = 0.1;
+	s->materials[1].diff = 0.1f;
 	s->numMaterials++;
 
 	s->materials[2].refl = 0;
@@ -218,8 +218,8 @@ int findintersection(struct Scene *s, struct Ray *r, struct IntersectionResult *
 {
 	int result = 0;
 	float dist = MAXFLOAT;
-	uint sphere = -1;
-	uint plane  = -1;
+	int sphere = -1;
+	int plane  = -1;
 
 	for(uint i = 0; i < s->numSpheres; i++)
 	{
